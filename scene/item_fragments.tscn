@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgxfihs200bmm"]
+
+[ext_resource type="Script" uid="uid://blliwatlhlhdg" path="res://script/item_fragments.gd" id="1_j8e66"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_esmq5"]
+radius = 8.0
+
+[node name="ItemFragment" type="Area2D"]
+script = ExtResource("1_j8e66")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_esmq5")
+debug_color = Color(0, 0.176471, 0.929412, 0.866667)

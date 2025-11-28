@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://51h24ppxyv0i"]
+
+[ext_resource type="Script" uid="uid://xoqf6fdpceld" path="res://script/checkpoint.gd" id="1_twgsb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rsc5n"]
+
+[node name="Checkpoint" type="Area2D"]
+script = ExtResource("1_twgsb")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_rsc5n")
+debug_color = Color(0.654902, 0.517647, 0, 0.815686)

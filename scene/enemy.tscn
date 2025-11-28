@@ -1,0 +1,153 @@
+[gd_scene load_steps=19 format=3 uid="uid://b0lrhx4smxarc"]
+
+[ext_resource type="Script" uid="uid://c8gwl02vjqr6r" path="res://script/enemy.gd" id="1_f87vc"]
+[ext_resource type="Texture2D" uid="uid://sug0f2jyy7r7" path="res://sprites/characters/slimeVar.png" id="1_h08p8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4gyqm"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qi2p4"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(32, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iifgy"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(64, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_epg4t"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(96, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3yqyl"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wujgv"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hb8ge"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e1ltt"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dxifv"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pwjut"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n0g06"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(64, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ar8e5"]
+atlas = ExtResource("1_h08p8")
+region = Rect2(96, 32, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_doop2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4gyqm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qi2p4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iifgy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_epg4t")
+}],
+"loop": true,
+"name": &"backEnemy",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3yqyl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wujgv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hb8ge")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e1ltt")
+}],
+"loop": true,
+"name": &"idleFrontEnemy",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dxifv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pwjut")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n0g06")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ar8e5")
+}],
+"loop": true,
+"name": &"sideEnemy",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8u16h"]
+radius = 7.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f87vc"]
+radius = 80.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b7koy"]
+radius = 10.0499
+
+[node name="enemy" type="CharacterBody2D"]
+collision_layer = 3
+collision_mask = 3
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_f87vc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_doop2")
+animation = &"idleFrontEnemy"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("CircleShape2D_8u16h")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CircleShape2D_f87vc")
+debug_color = Color(0.966524, 0.0218584, 0.466586, 0.42)
+
+[node name="CaptureZone" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaptureZone"]
+shape = SubResource("CircleShape2D_b7koy")
+debug_color = Color(0, 0.634123, 0.432678, 0.42)
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+debug_enabled = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_area_2d_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

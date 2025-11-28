@@ -1,0 +1,112 @@
+# GameManager.gd
+extends Node
+
+# Player state
+var player_node: Node = null
+var player_hp: int = 3
+var checkpoint_pos: Vector2 = Vector2.ZERO
+
+# Items collected (counts per type)
+var items_collected: Dictionary = {}
+
+# UI helpers
+var _item_label: Label = null
+var _hp_label: Label = null
+
+# Signals
+signal player_damaged(new_hp)
+signal item_picked(item_type)
+
+func _ready() -> void:
+	# Defer UI binding until the current scene is ready
+	call_deferred("_deferred_init")
+
+func _deferred_init() -> void:
+	# Try to find UI labels in the current scene (preferred)
+	var current_scene := get_tree().get_current_scene()
+	if current_scene != null:
+		_item_label = current_scene.find_node("ItemLabel", true, false)
+		_hp_label = current_scene.find_node("HPLabel", true, false)
+	else:
+		# fallback: try the scene tree root children (less reliable)
+		_item_label = get_tree().get_root().find_node("ItemLabel", true, false) if get_tree().get_root().has_method("find_node") else null
+		_hp_label = get_tree().get_root().find_node("HPLabel", true, false) if get_tree().get_root().has_method("find_node") else null
+
+	_update_ui()
+
+# Allow manual UI binding if you prefer (call from a Main scene script)
+func bind_ui(item_label_node: Label, hp_label_node: Label) -> void:
+	_item_label = item_label_node
+	_hp_label = hp_label_node
+	_update_ui()
+
+# ---------- Player registration / checkpoint ----------
+func register_player(node: Node) -> void:
+	player_node = node
+	# optional: set initial checkpoint to player's start
+	if player_node and player_node is Node2D:
+		checkpoint_pos = player_node.global_position
+
+func set_checkpoint(position: Vector2) -> void:
+	checkpoint_pos = position
+
+func respawn_player() -> void:
+	if player_node == null:
+		player_node = get_tree().get_root().find_node("Player", true, false)
+	if player_node and player_node.has_method("respawn_to_checkpoint"):
+		player_node.respawn_to_checkpoint()
+	elif player_node and player_node is Node2D:
+		player_node.global_position = checkpoint_pos
+
+# ---------- Items ----------
+func add_item(item_type: String = "item") -> void:
+	if not items_collected.has(item_type):
+		items_collected[item_type] = 0
+	items_collected[item_type] += 1
+	emit_signal("item_picked", item_type)
+	_update_ui()
+
+func get_item_count(item_type: String) -> int:
+	return items_collected.get(item_type, 0)
+
+func _update_ui() -> void:
+	# Items
+	if _item_label and _item_label is Label:
+		var lines: Array[String] = []
+		for k in items_collected.keys():
+			lines.append("%s: %d" % [str(k).capitalize(), items_collected[k]])
+		var final_text := "Items\n"
+		if lines.size() > 0:
+			final_text += "\n".join(lines)
+		else:
+			final_text += "None"
+		_item_label.text = final_text
+
+	# HP
+	if _hp_label and _hp_label is Label:
+		_hp_label.text = "HP: %d" % player_hp
+
+# ---------- Damage/HP ----------
+func damage_player(captor: Node = null) -> void:
+	# Called by enemies when they capture the player.
+	player_hp -= 1
+	if player_hp < 0:
+		player_hp = 0
+	emit_signal("player_damaged", player_hp)
+	_update_ui()
+
+	if player_hp > 0:
+		# respawn at checkpoint (player script should zero velocity, invulnerable frames, etc.)
+		respawn_player()
+	else:
+		# game over — for now just print; you can extend to show a game over scene
+		print("GameManager: Player HP zero — game over. Resetting state.")
+		_reset_game()
+
+func _reset_game() -> void:
+	# This is a dumb reset. Tweak as needed (save, reload scene, show menu, etc.)
+	player_hp = 3
+	items_collected.clear()
+	_update_ui()
+	# respawn player to checkpoint
+	respawn_player()
