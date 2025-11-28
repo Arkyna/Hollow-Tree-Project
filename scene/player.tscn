@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://b8aoy5rcobhqi"]
+[gd_scene load_steps=18 format=3 uid="uid://b8aoy5rcobhqi"]
 
 [ext_resource type="Script" uid="uid://bxjvt1wvssrpm" path="res://script/player.gd" id="1_xo3ru"]
 [ext_resource type="Texture2D" uid="uid://dsvafmfb7u1q0" path="res://sprites/custom/raka_idle_full.png" id="2_hjaqi"]
+[ext_resource type="Script" uid="uid://bko37002i2860" path="res://scene/camera_2d.gd" id="3_fvtld"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fvtld"]
 atlas = ExtResource("2_hjaqi")
@@ -106,9 +107,9 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hjaqi"]
-radius = 7.0
+radius = 8.0
 
-[node name="player" type="CharacterBody2D" groups=["Player"]]
+[node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_xo3ru")
@@ -116,22 +117,40 @@ script = ExtResource("1_xo3ru")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-1, 0)
 sprite_frames = SubResource("SpriteFrames_j4wxg")
-animation = &"back"
+animation = &"frontIdle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 1)
+visible = false
 shape = SubResource("CircleShape2D_hjaqi")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 process_priority = 6
 scale = Vector2(1e-05, 1e-05)
-zoom = Vector2(2, 2)
+zoom = Vector2(3, 3)
 process_callback = 0
 position_smoothing_enabled = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
+drag_left_margin = 0.0
+drag_top_margin = 0.0
+drag_right_margin = 0.0
+drag_bottom_margin = 0.0
+script = ExtResource("3_fvtld")
 
 [node name="SprintTimer" type="Timer" parent="."]
 wait_time = 0.5
+
+[node name="Flashlight" type="Area2D" parent="."]
+light_mask = 0
+visibility_layer = 16
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Flashlight"]
+light_mask = 0
+visibility_layer = 16
+position = Vector2(38, 0)
+scale = Vector2(3.75, 1)
+polygon = PackedVector2Array(-10, 0, 10, -10, 10, 10)
 
 [connection signal="timeout" from="SprintTimer" to="." method="_on_timer_timeout"]

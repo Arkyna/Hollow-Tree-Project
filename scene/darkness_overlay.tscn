@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://ove56uj24bkn"]
+
+[ext_resource type="Script" uid="uid://d30btx8u0w7b3" path="res://script/darkness_overlay.gd" id="1_sc7io"]
+[ext_resource type="Shader" uid="uid://c1u4kvue01lm6" path="res://scene/darkness.gdshader" id="2_n73gf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_k3whu"]
+shader = ExtResource("2_n73gf")
+shader_parameter/light_position = Vector2(0, 0)
+shader_parameter/light_radius = 240.0
+shader_parameter/cone_angle = 0.55
+shader_parameter/cone_direction = 0.0
+
+[node name="DarknessOverlay" type="CanvasLayer" groups=["Darkness"]]
+script = ExtResource("1_sc7io")
+
+[node name="Mask" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_k3whu")
+offset_right = 1949.0
+offset_bottom = 1072.0
+color = Color(0, 0, 0, 0.901961)

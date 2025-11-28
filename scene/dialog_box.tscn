@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxgpew7duq75g"]
+
+[ext_resource type="Script" uid="uid://jgt1k7ua6mj6" path="res://dialog_box.gd" id="1_xl8tr"]
+[ext_resource type="Texture2D" uid="uid://d0nws3nnttdbg" path="res://sprites/objects/rock_in_water_06.png" id="2_0vsup"]
+
+[node name="DialogBox" type="CanvasLayer"]
+script = ExtResource("1_xl8tr")
+
+[node name="Panel" type="Node2D" parent="."]
+
+[node name="VBoxContainer" type="Node2D" parent="Panel"]
+
+[node name="HBoxContainer" type="Node2D" parent="Panel/VBoxContainer"]
+
+[node name="TextureRect" type="TextureRect" parent="Panel/VBoxContainer/HBoxContainer"]
+offset_top = 24.0
+offset_right = 40.0
+offset_bottom = 64.0
+texture = ExtResource("2_0vsup")
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
+offset_top = 56.0
+offset_right = 40.0
+offset_bottom = 79.0
+text = "npc"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/VBoxContainer"]
+offset_top = 80.0
+offset_right = 40.0
+offset_bottom = 120.0
+bbcode_enabled = true
+text = "lmao"
+
+[node name="HBoxContainer" type="Node2D" parent="Panel"]
+
+[node name="Button" type="Button" parent="Panel/HBoxContainer"]
+offset_top = 104.0
+offset_right = 43.0
+offset_bottom = 135.0
+text = "next"

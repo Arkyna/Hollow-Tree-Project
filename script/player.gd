@@ -35,6 +35,9 @@ func handle_input() -> void:
 		Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left"),
 		Input.get_action_strength("ui_down")  - Input.get_action_strength("ui_up")
 	)
+	if direction != Vector2.ZERO:
+		var target_angle := direction.angle()
+		_update_flashlight_smooth(target_angle)
 
 	var is_moving := direction != Vector2.ZERO
 	var pressing_sprint := Input.is_action_pressed("sprint")
@@ -82,7 +85,7 @@ func play_anim(String) -> void:
 		anim.play("back")
 
 # Sambungkan SprintTimer.timeout() -> _on_sprint_timer_timeout()
-func _on_timer_timeout() -> void:
+func _on_SprintTimer_timeout() -> void:
 	# sprint habis — matikan sprint dan blok lagi sampai tombol dilepas
 	is_sprinting = false
 	can_sprint = false
@@ -106,10 +109,33 @@ func respawn_to_checkpoint() -> void:
 	velocity = Vector2.ZERO
 	# optional: invulnerable frames / blink
 
+func _update_flashlight_smooth(target_angle: float) -> void:
+	var current: float = $Flashlight.rotation
+	var diff := _angle_difference(current, target_angle)
+
+	# Snap instantly if angle change is large (player whips around)
+	if diff > deg_to_rad(60):
+		$Flashlight.rotation = target_angle
+		return
+
+	# Otherwise smooth follow
+	var new_angle: float = lerp_angle(current, target_angle, 0.3)
+	$Flashlight.rotation = new_angle
+
+func _angle_difference(a: float, b: float) -> float:
+	# Godot 4 safe angle difference
+	var diff := wrapf(b - a, -PI, PI)
+	return abs(diff)
 
 func die() -> void:
 	print("Player touched enemy — game over.")
 	call_deferred("_go_to_game_over")
+
+func _process(_delta):
+	var overlay = get_tree().get_first_node_in_group("Darkness")
+	if overlay:
+		overlay.set_light_position(global_position)
+		overlay.set_light_angle($Flashlight.rotation)
 
 func _go_to_game_over() -> void:
 	get_tree().change_scene_to_file("res://scene/game_over.tscn")
