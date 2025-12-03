@@ -113,6 +113,8 @@ radius = 7.0
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_xo3ru")
+walk_speed = 65.0
+sprint_speed = 100.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-1, 0)
@@ -129,8 +131,6 @@ scale = Vector2(1e-05, 1e-05)
 zoom = Vector2(2, 2)
 process_callback = 0
 position_smoothing_enabled = true
-drag_horizontal_enabled = true
-drag_vertical_enabled = true
 drag_left_margin = 0.0
 drag_top_margin = 0.0
 drag_right_margin = 0.0
@@ -138,7 +138,7 @@ drag_bottom_margin = 0.0
 script = ExtResource("3_fvtld")
 
 [node name="SprintTimer" type="Timer" parent="."]
-wait_time = 0.2
+wait_time = 0.087
 
 [node name="Flashlight" type="Area2D" parent="."]
 visible = false

@@ -83,9 +83,11 @@ func handle_movement() -> void:
 		velocity = input_dir * current_speed
 		update_animation(input_dir)
 		update_flashlight_smooth(input_dir.angle())
+		_debug_camera_center() 
 	else:
 		velocity = Vector2.ZERO
 		update_animation(Vector2.ZERO)
+		_debug_camera_center() 
 
 # --- VISUALS ---
 
@@ -124,6 +126,18 @@ func update_darkness_overlay() -> void:
 	if overlay and flashlight:
 		overlay.set_light_position(global_position)
 		overlay.set_light_angle(flashlight.rotation)
+
+# --- ENHANCED DEBUG FUNCTION (Fixes Drift) ---
+func _debug_camera_center() -> void:
+	# This function prevents the camera's internal offset and local position from accumulating.
+	var cam = get_node_or_null("Camera2D")
+	if cam:
+		# 1. Force the camera's internal offset to zero (overrides drag/smooth offsets)
+		cam.offset = Vector2.ZERO
+		
+		# 2. Force the camera's local position to zero (ensures it is perfectly centered on the player)
+		cam.position = Vector2.ZERO
+# --------------------------
 
 # --- SIGNALS & LOGIC ---
 
