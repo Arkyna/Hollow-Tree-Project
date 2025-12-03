@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="HT-Proto0"
-run/main_scene="uid://dt7fj71vi5f6u"
+run/main_scene="uid://c038m1hysy732"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 

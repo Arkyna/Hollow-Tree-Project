@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bspd2cq5mpcbq"]
 
 [ext_resource type="Script" uid="uid://cl81ekhq2oj0c" path="res://script/block_spot.gd" id="1_t3hep"]
-[ext_resource type="Texture2D" uid="uid://c151vgqge6cua" path="res://sprites/tilesets/Debug Tiles.png" id="2_22is0"]
+[ext_resource type="Texture2D" uid="uid://blurqn0hfo5sy" path="res://sprites/tilesets/Debug Tiles.png" id="2_22is0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cx7ap"]
 size = Vector2(16, 16)

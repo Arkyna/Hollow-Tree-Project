@@ -30,7 +30,7 @@ grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/CenterContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 5
 
 [node name="TitleLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 layout_mode = 2
@@ -40,11 +40,20 @@ horizontal_alignment = 1
 [node name="ScoreLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
 text = "Fragments Collected: 0"
 
-[node name="Spacer" type="Control" parent="ColorRect/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+[node name="TimeLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Time:"
+
+[node name="HighScoreLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Best Time:"
 
 [node name="RetryButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
 unique_name_in_owner = true

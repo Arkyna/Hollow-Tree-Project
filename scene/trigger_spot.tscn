@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cq3ph36ulv38t"]
 
-[ext_resource type="Texture2D" uid="uid://c151vgqge6cua" path="res://sprites/tilesets/Debug Tiles.png" id="1_525yj"]
+[ext_resource type="Texture2D" uid="uid://blurqn0hfo5sy" path="res://sprites/tilesets/Debug Tiles.png" id="1_525yj"]
 [ext_resource type="Script" uid="uid://bdkgdmhjnj0th" path="res://script/trigger_spot.gd" id="1_h57k2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h57k2"]

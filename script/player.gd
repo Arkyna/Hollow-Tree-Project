@@ -145,16 +145,38 @@ func check_enemy_collision() -> void:
 			break
 
 # --- CHECKPOINTS & DEATH ---
-
 func set_checkpoint(pos: Vector2) -> void:
 	checkpoint_pos = pos
 	print("Checkpoint set: ", checkpoint_pos)
 
 func respawn_to_checkpoint() -> void:
-	print("Player: Respawning at ", checkpoint_pos)
+	print("Player: Starting Respawn Sequence...")
+	
+	set_physics_process(false)
+	velocity = Vector2.ZERO
+	
+	await Transition.fade_to_black() 
+	
+	var active = Manager.current_active_stage
+	var target = Manager.last_checkpoint_stage
+	
+	if active and target and is_instance_valid(active) and is_instance_valid(target) and active != target:
+		active.process_mode = Node.PROCESS_MODE_DISABLED
+		active.visible = false
+		
+		target.process_mode = Node.PROCESS_MODE_INHERIT
+		target.visible = true
+		Manager.current_active_stage = target
 	
 	global_position = checkpoint_pos
-	velocity = Vector2.ZERO
+	
+	var cam = get_node_or_null("Camera2D") 
+	if cam:
+		cam.reset_smoothing()
+	
+	await get_tree().process_frame # Wait for camera to update position
+	
+	await Transition.fade_to_normal() # Screen reveals new position
 	
 	modulate.a = 0.5 
 	await get_tree().create_timer(1.0).timeout

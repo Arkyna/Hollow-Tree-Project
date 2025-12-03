@@ -4,19 +4,16 @@ extends Control
 @onready var quit_button: Button = %QuitButton
 
 func _ready() -> void:
-	# Connect the button signals
+	if Manager:
+		Manager.reset_game_state()
+	
 	play_button.pressed.connect(_on_play_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 
-	# OPTIONAL: Reset game state just in case
-	# This ensures if you come back to menu from game over, everything is clean
-	if Manager:
-		Manager.reset_game_state()
-
 func _on_play_pressed() -> void:
-	# Change this path to your actual first level scene!
+	# 2. Start the timer right before entering the game world
+	Manager.start_game_timer()
 	get_tree().change_scene_to_file("res://scene/zone1.tscn")
 
 func _on_quit_pressed() -> void:
-	# Quits the game desktop application
 	get_tree().quit()
