@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bgxfihs200bmm"]
+[gd_scene load_steps=4 format=3 uid="uid://bgxfihs200bmm"]
 
 [ext_resource type="Script" uid="uid://blliwatlhlhdg" path="res://script/item_fragments.gd" id="1_j8e66"]
+[ext_resource type="Texture2D" uid="uid://dm24rue0onhjk" path="res://sprites/objects/chest_01.png" id="2_1rui3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_esmq5"]
 radius = 8.0
@@ -9,6 +10,9 @@ radius = 8.0
 script = ExtResource("1_j8e66")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_1rui3")
+region_enabled = true
+region_rect = Rect2(0, 1, 16, 16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_esmq5")

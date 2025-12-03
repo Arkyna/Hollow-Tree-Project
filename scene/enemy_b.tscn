@@ -44,8 +44,9 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_tir0h"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tir0h"]
 radius = 8.0
+height = 16.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yhyj1"]
 radius = 192.0
@@ -59,21 +60,24 @@ patrol_speed = 35.0
 chase_speed = 60.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -3)
 sprite_frames = SubResource("SpriteFrames_neby0")
 animation = &"idleFrontEnemy"
 frame = 2
 frame_progress = 0.961504
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_tir0h")
+shape = SubResource("CapsuleShape2D_tir0h")
 
 [node name="DetectionArea" type="Area2D" parent="."]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
 shape = SubResource("CircleShape2D_yhyj1")
 debug_color = Color(0.911071, 0.266247, 0.339483, 0.42)
 
 [node name="LightCheckArea" type="Area2D" parent="."]
+visible = false
 light_mask = 0
 visibility_layer = 16
 collision_mask = 16
