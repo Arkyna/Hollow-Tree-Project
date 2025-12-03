@@ -1,19 +1,18 @@
 [gd_scene load_steps=4 format=3 uid="uid://cq3ph36ulv38t"]
 
-[ext_resource type="Texture2D" uid="uid://blurqn0hfo5sy" path="res://sprites/tilesets/Debug Tiles.png" id="1_525yj"]
 [ext_resource type="Script" uid="uid://bdkgdmhjnj0th" path="res://script/trigger_spot.gd" id="1_h57k2"]
+[ext_resource type="Texture2D" uid="uid://cm6hqjrlgpaqa" path="res://sprites/tilesets/Cave_Classic.png" id="2_h57k2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h57k2"]
 size = Vector2(16, 16)
 
 [node name="triggerSpot" type="Node2D"]
-visible = false
 script = ExtResource("1_h57k2")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_525yj")
+texture = ExtResource("2_h57k2")
 region_enabled = true
-region_rect = Rect2(16, 64, 16, 16)
+region_rect = Rect2(320, 32, 16, 16)
 
 [node name="Area2D" type="Area2D" parent="."]
 monitorable = false

@@ -1,0 +1,151 @@
+[gd_scene load_steps=20 format=3 uid="uid://boiepycw07h88"]
+
+[ext_resource type="Script" uid="uid://drxtrld3fyyxe" path="res://script/npc.gd" id="1_54ctn"]
+[ext_resource type="Texture2D" uid="uid://cga8ep6fn44wb" path="res://sprites/custom/putri.png" id="1_np5a4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_54ctn"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(0, 0, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ab2no"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(38, 0, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8oust"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(76, 0, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pesj1"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(114, 0, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_06vv4"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(0, 22, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fb5s2"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(38, 22, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_04kj1"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(76, 22, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_co7e6"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(114, 22, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_37thx"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(0, 44, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eitvi"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(38, 44, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kigg8"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(76, 44, 38, 22)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4vd3j"]
+atlas = ExtResource("1_np5a4")
+region = Rect2(114, 44, 38, 22)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l2nt2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_54ctn")
+}],
+"loop": true,
+"name": &"false",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ab2no")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8oust")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pesj1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_06vv4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fb5s2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_04kj1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_co7e6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_37thx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eitvi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kigg8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4vd3j")
+}],
+"loop": false,
+"name": &"princess",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r6avw"]
+size = Vector2(16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wowji"]
+radius = 16.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_54ctn"]
+font_size = 10
+
+[sub_resource type="LabelSettings" id="LabelSettings_ab2no"]
+font_size = 9
+
+[node name="Npc" type="CharacterBody2D"]
+script = ExtResource("1_54ctn")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_l2nt2")
+animation = &"princess"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_r6avw")
+
+[node name="InteractionZone" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionZone"]
+shape = SubResource("CircleShape2D_wowji")
+debug_color = Color(0.930424, 0.149605, 0.542736, 0.42)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -104.0
+offset_top = -48.0
+offset_right = 104.0
+offset_bottom = -25.0
+text = "lmao"
+label_settings = SubResource("LabelSettings_54ctn")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="InteractIcon" type="Label" parent="."]
+visible = false
+offset_left = -20.0
+offset_top = 16.0
+offset_right = 20.0
+offset_bottom = 39.0
+text = "E"
+label_settings = SubResource("LabelSettings_ab2no")
+horizontal_alignment = 1
+vertical_alignment = 1

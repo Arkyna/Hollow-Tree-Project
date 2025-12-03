@@ -120,7 +120,7 @@ collision_mask = 3
 motion_mode = 1
 wall_min_slide_angle = 0.0
 script = ExtResource("1_f87vc")
-speed = 52.0
+speed = 62.0
 chase_speed_mult = 1.2
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -134,6 +134,7 @@ shape = SubResource("CircleShape2D_8u16h")
 [node name="DetectionArea" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+visible = false
 shape = SubResource("CircleShape2D_f87vc")
 debug_color = Color(0.966524, 0.0218584, 0.466586, 0.42)
 

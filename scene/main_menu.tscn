@@ -46,6 +46,12 @@ layout_mode = 2
 text = "Start Game"
 icon_alignment = 1
 
+[node name="CreditsButton" type="Button" parent="CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Credits"
+icon_alignment = 1
+
 [node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2

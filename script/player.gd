@@ -57,17 +57,18 @@ func handle_debug_input() -> void:
 		print("Debug: Reset to start position.")
 
 func handle_movement() -> void:
-	# Godot 4: Cleaner way to get input vector (handles deadzones automatically)
-	var input_dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	# --- UPDATE: Gunakan nama action custom biar bisa WASD + Arrow ---
+	# Pastikan kamu sudah setting Input Map (lihat instruksi di bawah)
+	var input_dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	
 	# --- Sprint Logic ---
-	var pressing_sprint := Input.is_action_pressed("sprint") # Ensure 'sprint' is in Project Settings -> Input Map
+	var pressing_sprint := Input.is_action_pressed("sprint") 
 	
 	# Reset sprint ability if button is released
 	if not pressing_sprint:
 		can_sprint = true
 		is_sprinting = false
-		sprint_timer.stop() # Stop draining stamina if we stop running
+		sprint_timer.stop() 
 	
 	# Start sprinting
 	if pressing_sprint and input_dir != Vector2.ZERO and can_sprint:
@@ -87,8 +88,7 @@ func handle_movement() -> void:
 	else:
 		velocity = Vector2.ZERO
 		update_animation(Vector2.ZERO)
-		_debug_camera_center() 
-
+		_debug_camera_center()
 # --- VISUALS ---
 
 func update_animation(move_dir: Vector2) -> void:

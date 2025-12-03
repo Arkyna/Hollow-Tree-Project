@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cqhfb156gl5wk"]
 
 [ext_resource type="Script" uid="uid://cdkclmyb4yxom" path="res://script/end_gate.gd" id="1_krtby"]
-[ext_resource type="Texture2D" uid="uid://djkj3myohf7f8" path="res://sprites/tilesets/grass.png" id="2_78rmj"]
+[ext_resource type="Texture2D" uid="uid://d0iqsleqy3jbk" path="res://sprites/custom/gate.png" id="2_krtby"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5b6ut"]
 size = Vector2(16, 16)
@@ -13,4 +13,4 @@ script = ExtResource("1_krtby")
 shape = SubResource("RectangleShape2D_5b6ut")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_78rmj")
+texture = ExtResource("2_krtby")
