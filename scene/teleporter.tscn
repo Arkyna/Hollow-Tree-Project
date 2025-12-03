@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://d1yyf3f3d36ht"]
+
+[ext_resource type="Script" uid="uid://dl7tdt3t53e7w" path="res://script/teleporter.gd" id="1_j2obw"]
+[ext_resource type="Texture2D" uid="uid://djkj3myohf7f8" path="res://sprites/tilesets/grass.png" id="2_3xbpu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d8muy"]
+size = Vector2(16, 16)
+
+[node name="Teleporter" type="Area2D"]
+script = ExtResource("1_j2obw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_d8muy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="Grass" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_3xbpu")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

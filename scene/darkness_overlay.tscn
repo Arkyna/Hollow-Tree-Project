@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ove56uj24bkn"]
 
 [ext_resource type="Script" uid="uid://d30btx8u0w7b3" path="res://script/darkness_overlay.gd" id="1_sc7io"]
-[ext_resource type="Shader" uid="uid://c1u4kvue01lm6" path="res://scene/darkness.gdshader" id="2_n73gf"]
+[ext_resource type="Shader" uid="uid://c1u4kvue01lm6" path="res://script/darkness.gdshader" id="2_n73gf"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_k3whu"]
 shader = ExtResource("2_n73gf")

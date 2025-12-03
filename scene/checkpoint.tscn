@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://xoqf6fdpceld" path="res://script/checkpoint.gd" id="1_twgsb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rsc5n"]
+size = Vector2(16, 16)
 
 [node name="Checkpoint" type="Area2D"]
 script = ExtResource("1_twgsb")

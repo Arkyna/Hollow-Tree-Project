@@ -161,7 +161,7 @@ y_sort_enabled = true
 position = Vector2(320, 320)
 
 [node name="enemy" parent="." instance=ExtResource("3_5ca3f")]
-position = Vector2(104, 24)
+position = Vector2(313, 136)
 
 [node name="nextArea" parent="." instance=ExtResource("3_2gtj4")]
 position = Vector2(280, 584)

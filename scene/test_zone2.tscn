@@ -160,9 +160,8 @@ tile_set = SubResource("TileSet_8yb4s")
 y_sort_enabled = true
 position = Vector2(8, 24)
 
-[node name="enemy" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_ptpfm")]
+[node name="enemy" parent="." instance=ExtResource("3_ptpfm")]
 position = Vector2(128, 128)
-player = NodePath("../player")
 
 [node name="nextArea" parent="." instance=ExtResource("4_mmiht")]
 position = Vector2(320, 624)

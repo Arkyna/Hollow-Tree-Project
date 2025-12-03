@@ -1,76 +1,79 @@
 extends Area2D
 class_name ItemFragment
 
+@export_group("Settings")
 @export var is_fragment: bool = true
 @export var item_type: String = "coin"
-@export var pickup_sound_path: NodePath = NodePath("")
-@export var pickup_effect_path: NodePath = NodePath("")
+
+@export_group("Feedback (Optional)")
+# Use actual node references if they are children, or NodePaths if external
+@export var pickup_sound_node: AudioStreamPlayer2D 
+@export var pickup_effect_node: Node2D 
 
 func _ready() -> void:
 	monitoring = true
-	if not is_connected("body_entered", Callable(self, "_on_body_entered")):
-		connect("body_entered", Callable(self, "_on_body_entered"))
+	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node) -> void:
-	if body == null:
-		
-		return
 	if not body.is_in_group("Player"):
-		
 		return
-	
+
+	# 1. Trigger Visual/Audio Feedback
 	_play_pickup_feedback()
+	
+	# 2. Handle Logic (The Hybrid Approach)
+	var handled = false
+	
+	# PRIORITY A: Check the new Global Autoload "Manager"
+	# (You said you named the Autoload "Manager" in Project Settings)
+	if has_node("/root/Manager"):
+		# Accessing the autoload directly by name
+		_call_manager_methods(Manager)
+		handled = true
+		
+	# PRIORITY B: Fallback to the old "DemoManager" Group
+	elif not handled:
+		var dm = get_tree().get_first_node_in_group("DemoManager")
+		if dm:
+			print("[Fragment] Found legacy DemoManager via Group")
+			_call_manager_methods(dm)
+			handled = true
+			
+	# 3. Destroy Object
+	_destroy_self()
 
-	# ---- FIND DEMO MANAGER (SIMPLE + BULLETPROOF) ----
-	var dm: Node = null
-
-	# 1) Try group lookup first
-	dm = get_tree().get_first_node_in_group("DemoManager")
-
-	# 2) If still null, try exact-scene-path lookup (root child)
-	if dm == null:
-		var cs := get_tree().get_current_scene()
-		if cs and cs.has_node("gameManager"):
-			dm = cs.get_node("DemoManager")
-
-	# 3) If STILL null, fallback to optional autoload (if user ever uses it)
-	if dm == null:
-		dm = get_node_or_null("/root/GameManager")
-	if dm == null:
-		dm = get_node_or_null("/root/DemoManager")
-
-	print("[Fragment DEBUG] dm =", dm)
-
-	# ---- CALL MANAGER ----
-	if dm != null:
-		if is_fragment:
-			if dm.has_method("collect_fragment"):
-				print("[Fragment DEBUG] calling collect_fragment()")
-				dm.collect_fragment()
-			else:
-				print("[ERROR] manager missing collect_fragment()")
+func _call_manager_methods(target_manager: Node) -> void:
+	if is_fragment:
+		if target_manager.has_method("collect_fragment"):
+			target_manager.collect_fragment()
 		else:
-			if dm.has_method("add_item"):
-				print("[Fragment DEBUG] calling add_item()")
-				dm.add_item()
-			else:
-				print("[ERROR] manager missing add_item()")
+			push_error("[Fragment] Manager found but missing 'collect_fragment()'")
 	else:
-		print("[ERROR] No DemoManager found in scene.")
-
-	queue_free()
-
+		if target_manager.has_method("add_item"):
+			target_manager.add_item() # You can pass item_type here if your manager supports it
+		else:
+			push_error("[Fragment] Manager found but missing 'add_item()'")
 
 func _play_pickup_feedback() -> void:
-	if pickup_sound_path != NodePath(""):
-		var s := get_node_or_null(pickup_sound_path)
-		if s and s is AudioStreamPlayer:
-			s.play()
+	# Play Sound
+	if pickup_sound_node:
+		pickup_sound_node.play()
+	
+	# Play/Show Effect
+	if pickup_effect_node:
+		pickup_effect_node.show()
+		if pickup_effect_node.has_method("play"):
+			pickup_effect_node.play()
 
-	if pickup_effect_path != NodePath(""):
-		var fx := get_node_or_null(pickup_effect_path)
-		if fx:
-			if fx.has_method("play"):
-				fx.play()
-			elif fx.has_method("show"):
-				fx.show()
+func _destroy_self() -> void:
+	# CRITICAL FIX:
+	# If we delete the node immediately, the sound won't play.
+	# We hide the item, disable collision, wait for sound, THEN delete.
+	
+	hide() # Make invisible
+	set_deferred("monitoring", false) # Stop detecting collisions
+	
+	if pickup_sound_node and pickup_sound_node.playing:
+		await pickup_sound_node.finished
+	
+	queue_free()

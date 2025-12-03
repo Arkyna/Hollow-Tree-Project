@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bxjvt1wvssrpm" path="res://script/player.gd" id="1_xo3ru"]
 [ext_resource type="Texture2D" uid="uid://dsvafmfb7u1q0" path="res://sprites/custom/raka_idle_full.png" id="2_hjaqi"]
-[ext_resource type="Script" uid="uid://bko37002i2860" path="res://scene/camera_2d.gd" id="3_fvtld"]
+[ext_resource type="Script" uid="uid://bko37002i2860" path="res://script/camera_2d.gd" id="3_fvtld"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fvtld"]
 atlas = ExtResource("2_hjaqi")
@@ -107,7 +107,7 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hjaqi"]
-radius = 8.0
+radius = 7.0
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 3
@@ -126,7 +126,7 @@ shape = SubResource("CircleShape2D_hjaqi")
 [node name="Camera2D" type="Camera2D" parent="."]
 process_priority = 6
 scale = Vector2(1e-05, 1e-05)
-zoom = Vector2(3, 3)
+zoom = Vector2(2, 2)
 process_callback = 0
 position_smoothing_enabled = true
 drag_horizontal_enabled = true
@@ -138,9 +138,10 @@ drag_bottom_margin = 0.0
 script = ExtResource("3_fvtld")
 
 [node name="SprintTimer" type="Timer" parent="."]
-wait_time = 0.5
+wait_time = 0.2
 
 [node name="Flashlight" type="Area2D" parent="."]
+visible = false
 light_mask = 0
 visibility_layer = 16
 collision_layer = 16
@@ -153,4 +154,4 @@ position = Vector2(38, 0)
 scale = Vector2(3.75, 1)
 polygon = PackedVector2Array(-10, 0, 10, -10, 10, 10)
 
-[connection signal="timeout" from="SprintTimer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="SprintTimer" to="." method="_on_sprint_timer_timeout"]

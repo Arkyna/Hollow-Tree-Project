@@ -2,45 +2,57 @@
 
 [ext_resource type="Script" uid="uid://djmeyjbjaenw5" path="res://script/game_over.gd" id="1_8uq5u"]
 
-[node name="gameOver" type="Node2D"]
+[node name="GameOver" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_8uq5u")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-visible = false
-offset_top = -16.0
-offset_right = 1152.0
-offset_bottom = 624.0
-color = Color(0, 0, 0, 1)
-
-[node name="label" type="Label" parent="."]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 144.0
-offset_top = 40.0
-offset_right = 304.0
-offset_bottom = 88.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "GAME OVER"
+color = Color(0, 0, 0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Game Over"
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="retry" type="Button" parent="."]
-offset_left = 120.0
-offset_top = 96.0
-offset_right = 328.0
-offset_bottom = 144.0
-text = "RETRY?"
+[node name="ScoreLabel" type="Label" parent="ColorRect/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Fragments Collected: 0"
 
-[node name="mainMenu" type="Button" parent="."]
-offset_left = 120.0
-offset_top = 160.0
-offset_right = 328.0
-offset_bottom = 216.0
-text = "Main Menu"
+[node name="Spacer" type="Control" parent="ColorRect/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
-[connection signal="pressed" from="retry" to="." method="_on_retry_pressed"]
-[connection signal="pressed" from="mainMenu" to="." method="_on_main_menu_pressed"]
+[node name="RetryButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Try Again?"
+
+[node name="QuitButton" type="Button" parent="ColorRect/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit
+"
