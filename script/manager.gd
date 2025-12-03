@@ -95,4 +95,7 @@ func reset_game_state() -> void:
 	
 func game_over() -> void:
 	stop_game_timer()
+	var bgm_player = get_tree().get_first_node_in_group("BGM") 
+	if bgm_player:
+		pass
 	get_tree().change_scene_to_file("res://scene/game_over.tscn")
