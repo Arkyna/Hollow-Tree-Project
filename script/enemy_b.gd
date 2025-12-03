@@ -1,176 +1,180 @@
 extends CharacterBody2D
 class_name ShadowStalker
 
+# --- Configuration ---
+@export_group("Stats")
 @export var patrol_speed: float = 45.0
 @export var chase_speed: float = 80.0
-@export var arrive_distance: float = 8.0
-@export var freeze_delay_ms: int = 500  # half second recover time
+@export var arrive_distance: float = 10.0
+@export var freeze_delay: float = 0.5 # Seconds (easier to edit than ms)
 
-@export var patrol_parent: NodePath = NodePath("")
-@export var player_path: NodePath = NodePath("")
+@export_group("References")
+@export var patrol_parent: Node2D # Direct reference is better than NodePath
+@export var player_target: Node2D # Can be assigned manually or found auto
 
+# --- Nodes ---
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
-@onready var nav: NavigationAgent2D = $NavigationAgent2D
+@onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var detection_area: Area2D = $DetectionArea
-@onready var light_area: Area2D = $LightCheckArea
+# @onready var capture_area removed
+@onready var recover_timer: Timer = $RecoverTimer 
 
+# --- State ---
 enum State { IDLE, CHASE, FROZEN, RECOVER }
 var state: State = State.IDLE
-
-var player: Node2D
 var patrol_points: Array[Node2D] = []
 var patrol_index: int = 0
-var freeze_until: int = 0
-
 
 func _ready() -> void:
-	# Resolve player
-	if player_path != NodePath(""):
-		player = get_node_or_null(player_path)
-	else:
-		player = get_tree().get_first_node_in_group("Player")
+	# 1. Setup Timer
+	recover_timer.wait_time = freeze_delay
+	recover_timer.one_shot = true
+	recover_timer.timeout.connect(_on_recover_timeout)
+	
+	# 2. Find Player (Fallback)
+	if not player_target:
+		player_target = get_tree().get_first_node_in_group("Player")
 
-	# Patrol points
-	var parent = null
-	if patrol_parent != NodePath(""):
-		parent = get_node_or_null(patrol_parent)
-	elif has_node("PatrolPoints"):
-		parent = $PatrolPoints
-
-	if parent:
-		for c in parent.get_children():
-			if c is Node2D:
-				patrol_points.append(c)
-
+	# 3. Setup Patrol
+	if patrol_parent:
+		for child in patrol_parent.get_children():
+			if child is Node2D:
+				patrol_points.append(child)
+	
+	# If no points, patrol current spot
 	if patrol_points.is_empty():
-		var fallback := Node2D.new()
-		fallback.global_position = global_position
-		add_child(fallback)
-		patrol_points.append(fallback)
+		patrol_points.append(self) 
 
-	# Connect signals
-	detection_area.connect("body_entered", Callable(self, "_on_detect_enter"))
-	detection_area.connect("body_exited", Callable(self, "_on_detect_exit"))
-	light_area.connect("area_entered", Callable(self, "_on_light_enter"))
-	light_area.connect("area_exited", Callable(self, "_on_light_exit"))
+	# 4. Signals
+	detection_area.body_entered.connect(_on_detect_enter)
+	detection_area.body_exited.connect(_on_detect_exit)
+	# capture_area signal removed
+	
+	# Assuming LightCheckArea is linked via Editor signals or has a specific script
+	if has_node("LightCheckArea"):
+		var light_area = $LightCheckArea
+		light_area.area_entered.connect(_on_light_enter)
+		light_area.area_exited.connect(_on_light_exit)
 
-	nav.path_max_distance = 1024
-	nav.target_desired_distance = 1.0
-	anim.play("idle")  # starting animation
+	# 5. Nav Sync
+	call_deferred("actor_setup")
 
+func actor_setup():
+	await get_tree().physics_frame
+	anim.play("idle")
 
+func _physics_process(_delta: float) -> void:
+	# If frozen or recovering, stop moving immediately
+	if state == State.FROZEN or state == State.RECOVER:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
 
-func _physics_process(delta: float) -> void:
 	match state:
-
-		State.FROZEN:
-			velocity = Vector2.ZERO
-			return
-
-		State.RECOVER:
-			if Time.get_ticks_msec() >= freeze_until:
-				# Timer finished: choose state
-				if _player_visible():
-					state = State.CHASE
-				else:
-					state = State.IDLE
-			velocity = Vector2.ZERO
-			return
-
 		State.IDLE:
-			_do_patrol(delta)
-
+			_process_patrol()
 		State.CHASE:
-			_do_chase(delta)
+			_process_chase()
 
 	move_and_slide()
-
-
+	_check_collisions() # <--- NEW: Check for physical collision after moving
 
 # ─────────────────────────────────────────────
-# PATROL
+# BEHAVIORS
 # ─────────────────────────────────────────────
-func _do_patrol(delta: float) -> void:
-	var target := patrol_points[patrol_index].global_position
-	nav.target_position = target
 
-	_move_towards(nav.get_next_path_position(), patrol_speed)
+func _check_collisions() -> void:
+	# Iterate through all objects we collided with in the last move_and_slide()
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		
+		if collider is Player:
+			_attack_player(collider)
+			break # Don't attack twice in one frame
 
-	if global_position.distance_to(target) <= arrive_distance:
+func _attack_player(body: Player) -> void:
+	# Check if we are physically capable of attacking (not frozen)
+	if state == State.FROZEN or state == State.RECOVER:
+		return
+		
+	print("ShadowStalker: Caught player via collision!")
+	body.die()
+	
+	# Stop chasing briefly
+	state = State.IDLE
+
+func _process_patrol() -> void:
+	if patrol_points.is_empty(): return
+	
+	var target_node = patrol_points[patrol_index]
+	nav_agent.target_position = target_node.global_position
+	
+	if global_position.distance_to(target_node.global_position) < arrive_distance:
 		patrol_index = (patrol_index + 1) % patrol_points.size()
+		velocity = Vector2.ZERO 
+		anim.play("idle")
+	else:
+		_move_via_nav(patrol_speed)
+		anim.play("walk")
 
-	anim.play("walk")
-
-
-
-# ─────────────────────────────────────────────
-# CHASE
-# ─────────────────────────────────────────────
-func _do_chase(delta: float) -> void:
-	if player == null:
+func _process_chase() -> void:
+	if not player_target:
 		state = State.IDLE
 		return
+		
+	# OPTIMIZATION: Only recalculate path every 6 frames (~10 times per second)
+	# Recalculating pathfinding 60 times a second causes massive lag.
+	if Engine.get_physics_frames() % 6 == 0:
+		nav_agent.target_position = player_target.global_position
+	
+	_move_via_nav(chase_speed)
+	anim.play("walk") 
 
-	nav.target_position = player.global_position
-	_move_towards(nav.get_next_path_position(), chase_speed)
-
-	anim.play("walk")
-
-
-
-func _move_towards(next_pos: Vector2, speed: float) -> void:
-	var dir := (next_pos - global_position).normalized()
+func _move_via_nav(speed: float) -> void:
+	if nav_agent.is_navigation_finished():
+		velocity = Vector2.ZERO
+		return
+		
+	var next_pos = nav_agent.get_next_path_position()
+	var dir = global_position.direction_to(next_pos)
+	
 	velocity = dir * speed
 
-
-
 # ─────────────────────────────────────────────
-# STATE CHANGES — DETECTION
+# SIGNALS & STATE TRANSITIONS
 # ─────────────────────────────────────────────
-func _on_detect_enter(body: Node) -> void:
-	if state in [State.FROZEN, State.RECOVER]:
-		return
-	if body.is_in_group("Player"):
+
+func _on_detect_enter(body: Node2D) -> void:
+	if body == player_target and state not in [State.FROZEN, State.RECOVER]:
 		state = State.CHASE
 
-
-func _on_detect_exit(body: Node) -> void:
-	if state in [State.FROZEN, State.RECOVER]:
-		return
-	if body.is_in_group("Player"):
+func _on_detect_exit(body: Node2D) -> void:
+	if body == player_target and state not in [State.FROZEN, State.RECOVER]:
 		state = State.IDLE
 
+# _on_capture_entered removed (Logic moved to _check_collisions)
 
-
-# ─────────────────────────────────────────────
-# STATE CHANGES — LIGHT
-# ─────────────────────────────────────────────
-func _on_light_enter(area: Area2D) -> void:
-	# Entered flashlight zone → instant freeze
+func _on_light_enter(_area: Area2D) -> void:
 	state = State.FROZEN
-	velocity = Vector2.ZERO
-
-	# freeze animation but keep current frame (A2)
 	anim.pause()
+	recover_timer.stop() 
 
-	# set recovery timer
-	freeze_until = Time.get_ticks_msec() + freeze_delay_ms
-
-
-
-func _on_light_exit(area: Area2D) -> void:
-	# Left the light → but cannot immediately chase
+func _on_light_exit(_area: Area2D) -> void:
 	state = State.RECOVER
-	velocity = Vector2.ZERO
-	# stay frozen in place, animation still paused
-	# movement allowed only after freeze_until
+	recover_timer.start() 
 
-
+func _on_recover_timeout() -> void:
+	anim.play() 
+	if _can_see_player():
+		state = State.CHASE
+	else:
+		state = State.IDLE
 
 # ─────────────────────────────────────────────
 # HELPER
 # ─────────────────────────────────────────────
-func _player_visible() -> bool:
-	if player == null:
-		return false
-	return detection_area.get_overlapping_bodies().has(player)
+
+func _can_see_player() -> bool:
+	if not player_target: return false
+	return detection_area.overlaps_body(player_target)

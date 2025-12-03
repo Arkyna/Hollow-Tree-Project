@@ -141,7 +141,6 @@ script = ExtResource("3_fvtld")
 wait_time = 0.2
 
 [node name="Flashlight" type="Area2D" parent="."]
-visible = false
 light_mask = 0
 visibility_layer = 16
 collision_layer = 16
