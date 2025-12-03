@@ -116,6 +116,19 @@ script = ExtResource("1_xo3ru")
 walk_speed = 70.0
 sprint_speed = 100.0
 
+[node name="Flashlight" type="Area2D" parent="."]
+light_mask = 0
+visibility_layer = 16
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Flashlight"]
+light_mask = 0
+visibility_layer = 16
+position = Vector2(38, 0)
+scale = Vector2(3.75, 1)
+polygon = PackedVector2Array(-10, 0, 9.06667, -48, 9.06667, 48)
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-1, 0)
 sprite_frames = SubResource("SpriteFrames_j4wxg")
@@ -128,7 +141,6 @@ shape = SubResource("CircleShape2D_hjaqi")
 [node name="Camera2D" type="Camera2D" parent="."]
 process_priority = 6
 scale = Vector2(1e-05, 1e-05)
-zoom = Vector2(2, 2)
 process_callback = 0
 position_smoothing_enabled = true
 drag_left_margin = 0.0
@@ -139,19 +151,5 @@ script = ExtResource("3_fvtld")
 
 [node name="SprintTimer" type="Timer" parent="."]
 wait_time = 0.087
-
-[node name="Flashlight" type="Area2D" parent="."]
-visible = false
-light_mask = 0
-visibility_layer = 16
-collision_layer = 16
-collision_mask = 0
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Flashlight"]
-light_mask = 0
-visibility_layer = 16
-position = Vector2(38, 0)
-scale = Vector2(3.75, 1)
-polygon = PackedVector2Array(-10, 0, 10, -10, 10, 10)
 
 [connection signal="timeout" from="SprintTimer" to="." method="_on_sprint_timer_timeout"]

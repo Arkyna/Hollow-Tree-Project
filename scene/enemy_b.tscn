@@ -90,6 +90,5 @@ debug_color = Color(0.515674, 0.567398, 0.28844, 0.42)
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_postprocessing = 1
-debug_enabled = true
 
 [node name="RecoverTimer" type="Timer" parent="."]

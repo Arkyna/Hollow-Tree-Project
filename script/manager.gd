@@ -10,8 +10,8 @@ signal player_respawn_requested
 var current_score: int = 0
 var inventory_list: Array = []
 var collected_fragments: int = 0
-var current_lives: int = 2
-var max_lives: int = 2
+var current_lives: int = 10
+var max_lives: int = 10
 
 # --- STAGE TRACKING VARIABLES (For Teleporter/Respawn Fix) ---
 var current_active_stage: Node2D = null 

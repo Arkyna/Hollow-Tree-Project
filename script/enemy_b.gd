@@ -89,17 +89,22 @@ func _check_collisions() -> void:
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
 		
-		if collider is Player:
+		# FIX: Use Group check instead of 'is Player'
+		if collider.is_in_group("Player"):
 			_attack_player(collider)
 			break # Don't attack twice in one frame
 
-func _attack_player(body: Player) -> void:
+# FIX: Change 'body: Player' to 'body: Node2D'
+func _attack_player(body: Node2D) -> void:
 	# Check if we are physically capable of attacking (not frozen)
 	if state == State.FROZEN or state == State.RECOVER:
 		return
 		
 	print("ShadowStalker: Caught player via collision!")
-	body.die()
+	
+	# Call die() dynamically
+	if body.has_method("die"):
+		body.die()
 	
 	# Stop chasing briefly
 	state = State.IDLE
